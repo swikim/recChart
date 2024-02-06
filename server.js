@@ -122,6 +122,27 @@ app.get('/search',async(req,res)=>{
   }
 })
 
+app.get('/check', async (req, res) => {
+  const currentDate = req.query.data;
+
+  console.log('check data', currentDate);
+
+  try {
+    let result = await End_P.findOne({
+      date: currentDate,
+    }).exec();
+
+    console.log('check Data', result);
+
+    res.json({ data: result });
+    
+  } catch (err) {
+    console.log('Error Check date - server', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'client/build', 'index.html'));
