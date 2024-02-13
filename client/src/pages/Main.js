@@ -29,13 +29,21 @@ function Main(){
         "price":0
       }
     ]);
-
-
     
     const [endPrice, setendPrice] = useState([
       {
         "date":0,
         "price":0
+      }
+    ])
+    const [landPrice, setLandPrice] = useState([
+      {
+        "날짜":"",
+        "최고가":"",
+        "최저가":"",
+        "매도물량":"",
+        "체결물량":"",
+        "평균가":"",
       }
     ])
 
@@ -75,9 +83,8 @@ function Main(){
             if(data_db!=null){
               console.log('have data',currentDate)
             }else if(data_db===null){
-              console.log('dont have')
               const date_ApiUrl = `https://apis.data.go.kr/B552115/RecMarketInfo2/getRecMarketInfo2?serviceKey=yoDxAeXuxWRtQ%2BxEhRsJ0aFpqAVIInugpacEw9CJlopBLfc78UtjrXoR2KwMDtIrOtPL33SSz%2FdjDYI08s1%2Ffw%3D%3D&pageNo=1&numOfRows=30&dataType=json&bzDd=${dateFormat(currentDate)}`;
-              console.log(date_ApiUrl)
+              console.log('dont have',date_ApiUrl)
               get_openApiData(date_ApiUrl);
               handleSaveData();
             }
@@ -121,8 +128,7 @@ function Main(){
           const data = response.data;
           const newDate = parseInt(data.response.body.items.item[0].bzDd,10); 
           const newPrice = parseInt(data.response.body.items.item[0].clsPrc, 10); // 10은 기수를 나타냄
-          
-
+          console.log(newDate);
           setendPrice({
             date: newDate,
             price: newPrice
@@ -133,6 +139,55 @@ function Main(){
           console.error('Error fetching data,get_openApidata:', error);
         });
     }
+    const get_landData = async (url) => {
+      try {
+        const response = await axios.get(url);
+        const data = response.data;
+        const newdate = data.response.body.items.item[0].bzDd;
+        const newlandHgPrc = data.response.body.items.item[0].landHgPrc;
+        const newlandLwPrc = data.response.body.items.item[0].landLwPrc;
+        const newLandOrdRecValue = data.response.body.items.item[0].landOrdRecValue;
+        const newlandTrdRecValue = data.response.body.items.item[0].landTrdRecValue;
+        const newlandAvgPrc = data.response.body.items.item[0].landAvgPrc;
+    
+        await setLandPrice({
+          "날짜": newdate,
+          "최고가": newlandHgPrc,
+          "최저가": newlandLwPrc,
+          "매도물량": newLandOrdRecValue,
+          "체결물량": newlandTrdRecValue,
+          "평균가": newlandAvgPrc,
+        });
+    
+        console.log(landPrice);
+      } catch (err) {
+        console.error("error get_landData", err);
+      }
+    };
+    // const get_landData= async(url)=>{
+    //   await axios.get(url)
+    //     .then(response=>{
+    //       const data = response.data;
+    //       const newdate=data.response.body.items.item[0].bzDd
+    //       const newlandHgPrc = data.response.body.items.item[0].landHgPrc
+    //       const newlandLwPrc =data.response.body.items.item[0].landLwPrc
+    //       const newLandOrdRecValue = data.response.body.items.item[0].landOrdRecValue
+    //       const newlandTrdRecValue =data.response.body.items.item[0].landTrdRecValue
+    //       const newlandAvgPrc = data.response.body.items.item[0].landAvgPrc
+    //       setLandPrice({
+    //         "날짜":newdate,
+    //         "최고가":newlandHgPrc,
+    //         "최저가":newlandLwPrc,
+    //         "매도물량":newLandOrdRecValue,
+    //         "체결물량":newlandTrdRecValue,
+    //         "평균가":newlandAvgPrc,
+    //       });
+    //       console.log(landPrice);
+    //     })
+    //     .catch(err=>{
+    //       console.error("error get_landData",err);
+    //     })
+    // }
     const handleSaveData = async ()=>{
       try{
         await axios.post("http://localhost:8080/api/saveData",{data : endPrice});
@@ -142,21 +197,28 @@ function Main(){
       }
     }
   
-    const test = () =>{
-      const startDate = dateFormat(dateValue.from);
-      const endDate = dateFormat(dateValue.to);
+    const handleSaveDateland = async()=>{
       try{
-        axios.get('http://localhost:8080/search',{
-          params:{
-            startDate,
-            endDate,
-          }
-        })
-        // .then(response=>{
-        //   console.log('data from data',response.data);
-        // })
+        await axios.post("http://localhost:8080/api/saveData2",{data : landPrice});
+        console.log('data save success2')
       }catch(err){
-        console.error('Error searching code from client',err);
+        console.error('error saving data 2',err);
+      }
+    }
+
+    const test = () =>{
+      const startDate = new Date(dateValue.from);
+      const endDate = new Date(dateValue.to);
+      
+      const currentDate = new Date(startDate);
+
+      while(currentDate<=endDate){
+        if(currentDate.getDay()==2||currentDate.getDay()==4){
+          const date_ApiUrl = `https://apis.data.go.kr/B552115/RecMarketInfo2/getRecMarketInfo2?serviceKey=yoDxAeXuxWRtQ%2BxEhRsJ0aFpqAVIInugpacEw9CJlopBLfc78UtjrXoR2KwMDtIrOtPL33SSz%2FdjDYI08s1%2Ffw%3D%3D&pageNo=1&numOfRows=30&dataType=json&bzDd=${dateFormat(currentDate)}`;
+          get_landData(date_ApiUrl)
+          handleSaveDateland();
+        }
+        currentDate.setDate(currentDate.getDate()+1)
       }
     }
 
@@ -166,18 +228,20 @@ function Main(){
       const endDate = dateFormat(dateValue.to);
     
       axios
-        .get('http://localhost:8080/search', {
+        .get('http://localhost:8080/search_land', {
           params: {
             startDate,
             endDate,
           },
         })
         .then((response) => {
-          console.log(response.data.data[0].date);
-          setEnd_DataDB(response.data.data);
+          console.log(response.data.data);
+          setLandPrice(response.data.data);
         })
         .catch((error) => console.log('Error fetching data', error));
-    }, [dateValue.from, dateValue.to]);
+
+        console.log(landPrice)
+    }, [dateValue.from, dateValue.to],[landPrice]);
     
 
     
@@ -197,22 +261,22 @@ function Main(){
       <Button onClick={checkButton}>확인</Button>
       <Button onClick={OnbuttonClick}>button</Button>
       <Card>
-        <Title>Closed Pull Requests</Title>
+        <Title>육지 rec 가격</Title>
         <LineChart
           className="h-72 mt-4"
-          data={enddata_db}
-          index="date"
-          categories={["price"]}
-          colors={["neutral"]}
+          data={landPrice}
+          index="날짜"
+          categories={["최고가","최저가","매도물량","평균가"]}
+          colors={["emerald", "gray","indigo","violet"]}
           yAxisWidth={55}
-          onValueChange={(v) => setEnd_DataDB(v)}
+          onValueChange={(v) => setLandPrice(v)}
           connectNulls={true}
         />
       </Card>
       <div>
         {enddata_db && <h2>API Data : {enddata_db.date}</h2>}
         <Button onClick={handleSaveData}>save data</Button>
-        <Button onClick={test}>Search DB Test</Button>
+        <Button onClick={test}> Test</Button>
         <Button>과연 될려나</Button>
       </div>
     </>

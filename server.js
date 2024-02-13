@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const { End_P } = require('./model/End_P');
+const { Land_P }= require('./model/Land_P');
 
 const mongoUrl = process.env.mongoUrl;
 
@@ -18,6 +19,8 @@ mongoose.connect(mongoUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false });
+
 
 const db = mongoose.connection.useDb('recData');
 
@@ -101,6 +104,24 @@ app.post('/api/saveData', async(req,res)=>{
         })
     console.log(endp)
 })
+app.post('/api/saveData2',async(req,res)=>{
+  const landp = new Land_P(req.body.data);
+
+  await landp.save()
+    .then(()=>{
+      res.status(200).json({
+        success:true,
+      })
+    })
+    .catch((err)=>{
+      console.error(err);
+      res.json({
+          success :false,
+          err:err,
+      });
+  })
+  console.log(landp);
+})
 app.get('/search',async(req,res)=>{
   const s_Date_F = req.query.startDate
   const s_Date_T = req.query.endDate
@@ -121,7 +142,25 @@ app.get('/search',async(req,res)=>{
     console.error('Error Search Code :', error);
   }
 })
-
+app.get('/search_land',async(req,res)=>{
+  const start_d = req.query.startDate
+  const end_d = req.query.endDate
+  console.log('get data -land')
+  try{
+    let result = await Land_P.find({
+      날짜:{
+        $gte: start_d,
+        $lte: end_d
+      },
+    }).exec();
+    res.json({data:result})
+    console.log(result)
+  }catch(err){
+    console.error('error search_land code ',err)
+  }
+  console.log('search_land success')
+  
+})
 app.get('/check', async (req, res) => {
   const currentDate = req.query.data;
 
