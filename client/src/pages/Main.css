@@ -18,3 +18,7 @@
 .calender_box{
     width: 50%;
 }
+.weather_box{
+    float: right;
+    width: 15%;
+}
