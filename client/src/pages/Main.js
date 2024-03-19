@@ -82,37 +82,7 @@ function Main(){
     dateUrl = String(dateFormat(dateValue.from))
   
    
-    const checkButton = async()=>{
-      console.log("from",dateFormat(dateValue.from),"to : ",dateFormat(dateValue.to) , "week :",dateValue.from.getDay())
-
-      const startDate = new Date(dateValue.from);
-      const endDate = new Date(dateValue.to);
-      
-      const currentDate = new Date(startDate)
-      while(currentDate<=endDate){
-        if(currentDate.getDay()==2||currentDate.getDay()==4){
-          try {
-            const response = await axios.get(`http://localhost:8080/check?data=${dateFormat(currentDate)}`);
-            const data_db = response.data.data;
-            console.log('check data', data_db);
-            if(data_db!=null){
-              console.log('have data',currentDate)
-            }else if(data_db===null){
-              const date_ApiUrl = `https://apis.data.go.kr/B552115/RecMarketInfo2/getRecMarketInfo2?serviceKey=${apiKey}&pageNo=1&numOfRows=30&dataType=json&bzDd=${dateFormat(currentDate)}`;
-              console.log('dont have',date_ApiUrl)
-              get_openApiData(date_ApiUrl);
-              handleSaveData();
-            }
-          } catch (err) {
-            console.error("error check-client", err);
-          }
-          console.log(dateFormat(currentDate));
-          
-        }
-        currentDate.setDate(currentDate.getDate()+1)
-      }
-     
-    }
+   
 
     const openApiUrl = `https://apis.data.go.kr/B552115/RecMarketInfo2/getRecMarketInfo2?serviceKey=${apiKey}&pageNo=1&numOfRows=30&dataType=json&bzDd=${dateUrl}`;
 
@@ -130,7 +100,6 @@ function Main(){
             date: newDate,
             price: newPrice
           });
-          console.log(endPrice,newDate);
         })
         .catch(error => {
           console.error('Error fetching data:', error);
@@ -143,12 +112,10 @@ function Main(){
           const data = response.data;
           const newDate = parseInt(data.response.body.items.item[0].bzDd,10); 
           const newPrice = parseInt(data.response.body.items.item[0].clsPrc, 10); // 10은 기수를 나타냄
-          console.log(newDate);
           setendPrice({
             date: newDate,
             price: newPrice
           });
-          console.log(endPrice,newDate);
         })
         .catch(error => {
           console.error('Error fetching data,get_openApidata:', error);
@@ -185,7 +152,6 @@ function Main(){
             "평균가": newlandAvgPrc,
           }
         ];
-        console.log(landPrice2,newdate,"run getlanddata functions");
       } catch (err) {
         console.error("error get_landData", err);
       }
@@ -195,7 +161,6 @@ function Main(){
       getDB_Land(new Date(dateValue.from))
       .then((result)=>{
         const result_db = result
-        console.log(result_db,"db");
       })
       .catch((err)=>{
         console.error(err);
@@ -207,7 +172,6 @@ function Main(){
       
       try {
         await axios.post("http://localhost:8080/api/saveData2", { data: landPrice2[0] });
-        console.log('data save success2', landPrice2[0]);
       } catch (err) {
         console.error('error saving data 2', err);
       }
@@ -218,7 +182,6 @@ function Main(){
       try{
         const response = await axios.get(`http://localhost:8080/check_land?data=${dateFormat(currentDate)}`);
         const data_db_land = response.data.data;
-        console.log (data_db_land)
         return data_db_land;
       }catch(err){
         console.error("getDB_land err",err);
@@ -250,7 +213,6 @@ function Main(){
       let count = 0;
       while (currentDate <= endDate) {
         if (currentDate.getDay() == 2 || currentDate.getDay() == 4) {
-          console.log(currentDate);
           let result_db;
           count++;
           try {
@@ -259,7 +221,6 @@ function Main(){
             
             if (result_db == null) {
               const date_ApiUrl = `https://apis.data.go.kr/B552115/RecMarketInfo2/getRecMarketInfo2?serviceKey=${apiKey}&pageNo=1&numOfRows=30&dataType=json&bzDd=${dateFormat(currentDate)}`;
-              console.log('dont have data')
               
               // 비동기 함수 호출 후 기다리기
               await get_landData(date_ApiUrl);
@@ -267,7 +228,6 @@ function Main(){
               await handleSaveDateland(count);
 
             } else {
-              console.log("have data - land (setLandPrice)")
               setLandPrice(result_db)
             }
           } catch (err) {
@@ -289,7 +249,6 @@ function Main(){
           "최고가" : result.최고가,
           "최저가" : result.최저가
         }]
-        console.log(result.날짜,today_endP);
 
         return result
       }
@@ -311,10 +270,9 @@ function Main(){
               endDate,
             },
           });
-          console.log(response.data.data);
           setLandPrice_get(response.data.data);
         } catch (error) {
-          console.log('Error fetching data', error);
+          console.error('Error fetching data', error);
         }
     
         try {
@@ -324,16 +282,14 @@ function Main(){
             "최고가": response.data.data.최고가,
             "최저가": response.data.data.최저가
           }];
-          console.log(today_endP); // 1번 콘솔
         } catch (error) {
-          console.log('Error fetching data', error);
+          console.error('Error fetching data', error);
         }
 
        
       };
     
       fetchData();
-      console.log(today_endP)
     
     }, [dateValue.from, dateValue.to, landPrice]); // 하나의 의존성 배열로 통합
     
@@ -347,18 +303,10 @@ function Main(){
     
   return (
     <>
-    <Flex>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '23vh' }}>
       <LastestP></LastestP>
       <LastestSMP></LastestSMP>
-      {/* <Card className='top_card_left'>
-        <Title>REC현물</Title>
-        <Metric>최고가 : {`${today_endP.최고가}`}</Metric>
-      </Card> */}
-      {/* <Card className='top_card_right'>
-        <Title>SMP</Title>
-        <Metric>R</Metric>
-      </Card> */}
-    </Flex>
+    </div>
       <DateRangePicker
         value={dateValue}
         onValueChange={setDateValue}
@@ -367,7 +315,7 @@ function Main(){
         >
 
       </DateRangePicker>
-      <Button onClick={test}> Test</Button>
+      <Button onClick={test}> 확인</Button>
       <Card>
         <Title>육지 rec 가격</Title>
         <LineChart
@@ -389,16 +337,6 @@ function Main(){
           <Line type="linear" dataKey="최저가" stroke="#82ca9d" yAxisId="left" />
           <Line type="linear" dataKey="평균가" stroke="#8dd1e1" yAxisId="left" />
         </LineChart>
-        {/* <LineChart
-          className="h-72 mt-4"
-          data={landPrice_get}
-          index="날짜"
-          categories={["최고가","최저가","매도물량","평균가"]}
-          colors={["emerald", "gray","indigo","violet"]}
-          yAxisWidth={55}
-          onValueChange={(v) => setLandPrice_get(v)}
-          connectNulls={true}
-        /> */}
       </Card>
       <div>
         <Title>육지 rec 물량차트</Title>
@@ -408,7 +346,7 @@ function Main(){
         data={landPrice_get}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
         <XAxis dataKey={"날짜"}/>
-        <YAxis yAxisId="left" type='number' domain={[40000,160000]} />
+        <YAxis yAxisId="left" type='number' domain={[40000,210000]} />
         <YAxis yAxisId="right" orientation="right" />
         <CartesianGrid strokeDasharray="3 3" />
 

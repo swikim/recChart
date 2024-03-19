@@ -22,3 +22,127 @@
     float: right;
     width: 15%;
 }
+.image-container {
+    position: fixed;
+    
+    display: inline-block;
+  }
+.test{
+    position:absolute;
+    width: auto;
+    height: auto;
+}
+.ggbox{
+    position: absolute;
+    padding: 2px;
+    width: auto;
+    height: auto;
+    top: 182px;
+    left: 311px;
+    border: 1px solid;
+    border-radius: 20px;
+    background-color: white;
+
+}
+.gwbox{
+    position: absolute;
+    width: auto;
+    width: auto;
+    height: auto;
+    top: 162px;
+    left: 461px;
+    border: 1px solid;
+    border-radius: 20px;
+    background-color: white;
+}
+.cbbox{
+    position: absolute;
+    width: auto;
+    width: auto;
+    height: auto;
+    top: 300px;
+    left: 374px;
+    border: 1px solid;
+    border-radius: 20px;
+    background-color: white;
+
+}
+.cnbox{
+    position: absolute;
+    width: auto;
+    width: auto;
+    height: auto;
+    top: 330px;
+    left: 280px;
+    border: 1px solid;
+    border-radius: 20px;
+    background-color: white;
+}
+.jbbox{
+    position: absolute;
+    width: auto;
+    width: auto;
+    height: auto;
+    top: 430px;
+    left: 315px;
+    border: 1px solid;
+    border-radius: 20px;
+    background-color: white;
+}
+.jnbox{
+    position: absolute;
+    width: auto;
+    width: auto;
+    height: auto;
+    top: 550px;
+    left: 280px;
+    border: 1px solid;
+    border-radius: 20px;
+    background-color: white;
+}
+.gbbox{
+    position: absolute;
+    width: auto;
+    width: auto;
+    height: auto;
+    top: 340px;
+    left: 480px;
+    border: 1px solid;
+    border-radius: 20px;
+    background-color: white;
+}
+.gnbox{
+    position: absolute;
+    width: auto;
+    width: auto;
+    height: auto;
+    top: 490px;
+    left: 420px;
+    border: 1px solid;
+    border-radius: 20px;
+    background-color: white;
+}
+.jjbox{
+    position: absolute;
+    width: auto;
+    width: auto;
+    height: auto;
+    top: 751px;
+    left: 280px;
+    border: 1px solid;
+    border-radius: 20px;
+    background-color: white;
+}
+.mapimg{
+    position: relative;
+    width: 800px;
+    height: 800px;
+}
+.text{
+    white-space: pre-line;
+}
+#ex1 {
+    background-color : white;
+    border-radius: 30px;
+    border: 1px solid;
+  }

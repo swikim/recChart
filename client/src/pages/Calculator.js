@@ -1,7 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Select , SelectItem,Card, Title, TextInput ,Grid ,Text, Metric ,Button} from "@tremor/react";
+import { Select , SelectItem,Card, Title, TextInput ,Grid ,Text, Metric ,Button,Dialog, DialogPanel} from "@tremor/react";
+import { ca } from "date-fns/locale";
 
 
 function Calculator  () {
@@ -13,6 +14,14 @@ function Calculator  () {
     
     const [capacity, setCapacity] = useState('');
 
+    //체결가격
+    const [contract_p, setcontract_p] = useState('')
+    //총매출
+    const [totalrevenues, setTotalrevenues] = useState('')
+
+    //실제수익
+    const [realreturn, setRealreturn] = useState('')
+
     const handleInputChange_C = (e) => {
         setCapacity(e.target.value);
       };
@@ -20,8 +29,12 @@ function Calculator  () {
     
 
     const handleCheckInput_C = ()=>{
-        console.log(capacity,I_value);
-        if(I_value == 1){
+        if(I_value===''){
+          alert('설치유형을 선택해주세요')
+          return;
+        }else if(I_value == 1){
+            if(capacity===''){alert('설비용량을 입력해주세요')
+          return;}
             if(capacity<100){
                 setC_result(1.2);
             }
@@ -34,16 +47,27 @@ function Calculator  () {
                 setC_result(result1_3)
             }
         }else if(I_value == 2){
+          if(capacity===''){alert('설비용량을 입력해주세요')
+          return;}
             if(capacity <=3000) setC_result(1.5);
             else {
                 const result2_2 = (3000*1.5+(capacity-3000))/capacity;
                 setC_result(result2_2.toFixed(4));
             }
         }else if(I_value == 3){
-
+          if(capacity===''){alert('설비용량을 입력해주세요')
+          return;}
+          if(capacity<100){const result3_1 = 1.6
+          setC_result(result3_1)}
+          else if(100<=capacity<3000){const result3_2 = 1.4
+            setC_result(result3_2)}
+          else {const result3_3 = 1.2
+            setC_result(result3_3)}
         }else if(I_value == 4){
-
+          
+          setC_result(0.5)
         }
+       
     }
 
     //전력생산량
@@ -51,16 +75,35 @@ function Calculator  () {
     const [nextREC, setNextREC] = useState('');//이월 rec
 
     const handleInputChange_E = (e) => {
-        setE_output(e.target.value);
+      
+      setE_output(e.target.value);
       };
     const handleInputChange_R= (e) =>{
-        setNextREC(e.target.value);
+     
+      setNextREC(e.target.value);
+    }
+    const handleInputChange_p=(e)=>{
+      
+      setcontract_p(e.target.value);
     }
 
-    const [r_result, setR_result] = useState('');
-    const [n_result, setN_result] = useState('');
+    const [r_result, setR_result] = useState(''); //rec발급량
+    const [n_result, setN_result] = useState(''); //이월된 양
+    const [comm_result, setComm_result] = useState(''); //수수료
 
     const handleCheckInput_E = ()=>{ //rec발급량
+      if(e_output===''){
+        alert('전력생산량을 입력해주세요')
+        return;
+      }else if(e_output<=0){
+        alert('다시 입력해주세요')
+        return;
+      }
+      if(nextREC===''){
+        alert('이월된 REC을 입력해주세요')
+        return;
+      }
+      
         const result_r = (c_result * e_output)/1000; //단순결과
         const result_n = parseFloat(nextREC); // 이월된 rec float
         const resultAsNumber = parseFloat(result_r); // 계산한 float로 변환
@@ -69,12 +112,22 @@ function Calculator  () {
         const resultN = result_end - resultFloor; //이월된 양
        
 
-        console.log(resultAsNumber,resultFloor);
 
         setR_result(resultFloor.toFixed());
         setN_result(resultN.toFixed(1));
+        setComm_result(parseInt(r_result)*50)
     }
-
+    const handleCheckInput_P = () =>{
+      if(contract_p===''){
+        alert('체결가격을 입력해주세요')
+        return;
+      }else if(contract_p<=0){
+        alert('다시 입력해주세요')
+        return;
+      }
+      setTotalrevenues(contract_p*r_result);
+      setRealreturn(contract_p*r_result-comm_result);
+    }
     
     
 
@@ -91,7 +144,7 @@ function Calculator  () {
             
             <Grid numItemsMd={2} className="mt-6 gap-6">
         <Card>
-          <div className="h-60">
+          <div className="h-60">  
           <Title>태양광 REC가중치 계산기</Title>
           <Select value={I_value} onValueChange={(newValue)=> setI_value(newValue)} placeholder="설치 유형을 선택하세요">
                 <SelectItem value="1">
@@ -114,10 +167,10 @@ function Calculator  () {
                     onChange={handleInputChange_C}
                     placeholder="설비용량을 입력해주세요"/>
                     <div className="flex">
-                    <button onClick={handleCheckInput_C}>확인</button>
+                    <Button onClick={handleCheckInput_C}>확인</Button>
                     <Text className="absolute  right-7"> 단위:kw</Text>
                     </div>
-                    <div>
+                    <div style={{position:'flex'}}>
                         <Metric>가중치 : </Metric>
                         <Text>{c_result}</Text>
                     </div>
@@ -126,7 +179,8 @@ function Calculator  () {
         </Card>
         <Card>
           <div className="h-60">
-          <Title>R-1</Title>
+          <Title>REC발급수수료</Title>
+          <Text>{comm_result}원</Text>
           </div>
         </Card>
         <Card>
@@ -137,7 +191,7 @@ function Calculator  () {
                 type="text"
                 value={e_output}
                 onChange={handleInputChange_E}
-                placeholder="전력생산량을 입력하세요"/>
+                placeholder="전력생산량을 입력하세요 :단위kwh"/>
                 <TextInput
                 type="text"
                 value={nextREC}
@@ -154,7 +208,21 @@ function Calculator  () {
         </Card>
         <Card>
           <div className="h-60">
-            <Title>R-2</Title>
+            <Title>총REC매출</Title>
+            <TextInput
+            type="integer"
+            value={contract_p}
+            onChange={handleInputChange_p}
+            placeholder="REC 체결가격을 입력하세요"/>
+            <Button onClick={handleCheckInput_P}>확인</Button>
+            <div style={{position:'flex'}}>
+              <Metric>총매출 : </Metric>
+              <Text>{totalrevenues}원</Text>
+            </div>
+            <div style={{position:'flex'}}>
+              <Metric>실제수익 : </Metric>
+              <Text>{realreturn}원</Text>
+            </div>
           </div>
         </Card>
         
