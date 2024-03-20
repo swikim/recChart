@@ -171,7 +171,7 @@ function Main(){
     const handleSaveDateland = async (count) => {
       
       try {
-        await axios.post("http://localhost:8080/api/saveData2", { data: landPrice2[0] });
+        await axios.post("/api/saveData2", { data: landPrice2[0] });
       } catch (err) {
         console.error('error saving data 2', err);
       }
@@ -180,7 +180,7 @@ function Main(){
 
     const getDB_Land=async(currentDate)=>{
       try{
-        const response = await axios.get(`http://localhost:8080/check_land?data=${dateFormat(currentDate)}`);
+        const response = await axios.get(`/check_land?data=${dateFormat(currentDate)}`);
         const data_db_land = response.data.data;
         return data_db_land;
       }catch(err){
@@ -264,7 +264,7 @@ function Main(){
         const closestTT = lastestdate(today);
     
         try {
-          const response = await axios.get('http://localhost:8080/search_land', {
+          const response = await axios.get('/search_land', {
             params: {
               startDate,
               endDate,

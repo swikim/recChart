@@ -51,7 +51,6 @@ db.once('open', () => {
 });
 
 // 서버에 사용할 폴더 등록
-app.use(express.static(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 // React 애플리케이션의 라우터 처리
