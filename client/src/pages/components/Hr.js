@@ -108,6 +108,7 @@ const Hr=({region,onRegionChange})=>{
     return (
         <>
          <div style={{width:'800px',height:'auto',position:'relative'}}>
+            <Title>일조량 평균값</Title>
          <DateRangePicker
             value={dateValue}
             onValueChange={setDateValue}

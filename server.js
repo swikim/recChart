@@ -15,6 +15,7 @@ const { avgTa } = require('./model/avgTa')
 
 const mongoUrl = process.env.mongoUrl;
 const apiKey = process.env.apiKey;
+const PORT = process.env.PORT;
 
 app.use(express.json());
 //aplication/x-www-from / 분석
@@ -44,7 +45,7 @@ db.once('open', () => {
  // console.log('Connected to MongoDB');
   mongoose.connection.useDb('recData');
   // 서버 시작
-  app.listen(8080, () => {
+  app.listen(PORT, () => {
    // console.log('http://localhost:8080');
   });
 });
