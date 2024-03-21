@@ -31,10 +31,7 @@ app.use((req,res,next)=>{
 
 
 // Mongoose 연결 설정
-mongoose.connect(mongoUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(mongoUrl);
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false });
 
 
@@ -46,12 +43,14 @@ db.once('open', () => {
   mongoose.connection.useDb('recData');
   // 서버 시작
   app.listen(PORT, () => {
-   // console.log('http://localhost:8080');
+    console.log('http://localhost:8080');
   });
 });
 
 // 서버에 사용할 폴더 등록
-app.use(express.static(path.join(__dirname, 'client/build')));
+
+app.use(express.static(path.join(__dirname, 'client/build')));//Users/gimseung-u/RecChart/client/public/index.html
+
 
 // React 애플리케이션의 라우터 처리
 app.get('/', async (req, res) => {
