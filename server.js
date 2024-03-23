@@ -32,7 +32,6 @@ app.use((req,res,next)=>{
 
 // Mongoose 연결 설정
 mongoose.connect(mongoUrl);
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false });
 
 
 const db = mongoose.connection.useDb('recData');
