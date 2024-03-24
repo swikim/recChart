@@ -5,7 +5,7 @@ import { ko } from 'date-fns/locale';
 import { differenceInDays,format } from 'date-fns';
 import "../Main.css"
 
-const Hr=({region,onRegionChange})=>{
+const Hr=({onRegionChange})=>{
     const apiKey = process.env.REACT_APP_API_Key
 
     const [dateValue, setDateValue] = useState({
@@ -46,15 +46,15 @@ const Hr=({region,onRegionChange})=>{
         const url =`https://apis.data.go.kr/1360000/AsosDalyInfoService/getWthrDataList?serviceKey=${apiKey}&pageNo=1&numOfRows=${dayDifference}&dataType=json&dataCd=ASOS&dateCd=DAY&startDt=${startDate}&endDt=${dateFormat(endDate)}&stnIds=${region_Code}`
         const response = await axios.get(url);
         const data = response.data.response.body;
-        const weatherInfo = data.items.item[0].tm;
+        //const weatherInfo = data.items.item[0].tm;
         const stnid = data.items.item[0].stnId
         var i;
         var sumHr=0;
         for( i = 0; i<dayDifference-1;i++){
             const weatherInfo_date = data.items.item[i].tm;
-            const weatherInfo_avTa= data.items.item[i].avgTa;
+            //const weatherInfo_avTa= data.items.item[i].avgTa;
             const weatherInfo_Hr = data.items.item[i].sumSsHr;
-            const weatherInfo_iscs = data.items.item[i].iscs;
+            //const weatherInfo_iscs = data.items.item[i].iscs;
             const regionInfo =data.items.item[i].stnId;
             const weather_date=dateFormat(weatherInfo_date);
             ssHrData[i]= [
@@ -119,13 +119,7 @@ const Hr=({region,onRegionChange})=>{
             <h2 style={{position:'absolute',top:'5px',right:'10px'}}>단위:시간</h2>
          <img src="/koreamap.png" 
         style={{width:'800px',height:'800px'}}/>
-            {/* <div className='ggbox'>
-                {avgHr?(          
-                    <Text className='text'>경기<br/>{`${avgHr[0]}`}</Text>
-                ) : (
-                    <p>Loading...</p>
-                )}
-            </div> */}
+           
             <Button className="ggbox" onClick={()=>handleClick('경기')}> 
                 {avgHr?(          
                     <Text className='text'>경기<br/>{`${avgHr[0]}`}</Text>

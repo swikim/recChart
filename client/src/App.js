@@ -1,8 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Card, Metric, Text } from '@tremor/react';
+import React from 'react';
 import {  BrowserRouter, Routes, Route } from 'react-router-dom';
 import Main from './pages/Main';
 import Weather from './pages/Weather';

@@ -1,13 +1,9 @@
 import React, { useEffect,useState } from "react";
-import { Card, Title,Button,Text,Flex}from "@tremor/react";
-import {ko} from "date-fns/locale/ko";
-import {format} from "date-fns/format";
+import { Card, Title,Text,Flex}from "@tremor/react";
 import axios from "axios";
-import XMLParser from 'react-xml-parser';
 
 function LastestSMP(){
     
-    const url = 'https://openapi.kpx.or.kr/openapi/smp1hToday/getSmp1hToday?serviceKey=yoDxAeXuxWRtQ%2BxEhRsJ0aFpqAVIInugpacEw9CJlopBLfc78UtjrXoR2KwMDtIrOtPL33SSz%2FdjDYI08s1%2Ffw%3D%3D&areaCd=1'
     const [jsonData, setJsonData] = useState(null)
     const fetchData=async()=>{
         try {
@@ -23,10 +19,7 @@ function LastestSMP(){
         fetchData();
       }, []);
 
-      const testSMP=()=>{
-        fetchData()
-      }
-     
+      
       
     return (
         <>

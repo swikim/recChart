@@ -1,18 +1,12 @@
 import React, { useEffect,useState } from "react";
 import axios from "axios"
-import { Card, Title ,Text,Button ,Flex,
-    DateRangePicker ,DatePickerValue, DateRangePickerValue,DatePicker,DateRangePickerItem} from "@tremor/react";
-import { ko } from 'date-fns/locale';
-import { differenceInDays,format } from 'date-fns';
-import Weather from "../Weather";
+import { Card, Title ,Text,Flex} from "@tremor/react";
+import { format } from 'date-fns';
 import "../Main.css"
 import Hr from './Hr.js';
 
 function WeatherCard(){
     const apiKey = process.env.REACT_APP_API_Key
-
-    var compareTMX = -99;
-    var compareTMN = 99;
 
     const [resultTMX, setResultTMX] = useState(null);
     const [resultTMN, setResultTMN] = useState(null);
@@ -74,10 +68,10 @@ function WeatherCard(){
           }
     }
     const getToday_W=async(x,y,today)=>{
-        var nowHour = today.getHours() + "00";
+        let nowHour = today.getHours() + "00";
         if(today.getHours()<10){
             nowHour = "0" + today.getHours() + "00";
-        }else if(today.getHours()==2){
+        }else if(today.getHours()===2){
             nowHour = "0300"
         }
         else{
@@ -86,64 +80,56 @@ function WeatherCard(){
         const weather_url = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${apiKey}&pageNo=1&numOfRows=1000&dataType=json&base_date=${dateFormat(today)}&base_time=0200&nx=${x}&ny=${y}`
         const response = await axios.get(weather_url);
         const data = response.data.response.body.items
-        var i;
-        var temper;
-        var SKY;
-        for(i=0;i<254;i++){
+        let compareTMX = -99;
+        let compareTMN = 99;
+        let temper;
+        let SKY;
+        for(let i=0;i<254;i++){
             const result = data.item[i].category
 
             if(result === 'TMX'){
                 let TMX = Number(data.item[i].fcstValue);
-                compareTMX = (TMX>=compareTMX)?TMX:compareTMX;
+                compareTMX =  Math.max(TMX,compareTMX)
+               
             }
             if(result === 'TMN'){
                 let TMN = Number(data.item[i].fcstValue);
-                compareTMN = (TMN<=compareTMN)?TMN:compareTMN;
+                compareTMN = Math.min(TMN,compareTMN)
             }
-        }
-
-        for(i =0;i<254;i++){
-            const result = data.item[i].category
-
-            if(result=='TMP'){
-                if(data.item[i].fcstTime == nowHour){
+            if(result==='TMP'){
+                if(data.item[i].fcstTime === nowHour){
                     temper = data.item[i].fcstValue;
+                }
+            }
+            if(result === 'SKY' && data.item[i].fcstTime === nowHour){
+                if(data.item[i].fcstValue === '1'){
+                    SKY = "맑음"
                     break;
                 }
-            }
-        }
-        for(i =0;i<254;i++){
-            const result = data.item[i].category
-            if(result == 'SKY'){
-                if(data.item[i].fcstTime == nowHour){
-                    if(data.item[i].fcstValue == '1'){
-                        SKY = "맑음"
+                else if(data.item[i].fcstValue==='3'){
+                    SKY = '구름많음'
+                    break;
+                }
+                else if(data.item[i].fcstValue==='4'){
+                    if(data.item[i+1].fcstValue==='0'){
+                        SKY = '흐림'
                         break;
-                    }
-                    else if(data.item[i].fcstValue=='3'){
-                        SKY = '구름많음'
+                    }else if(data.item[i+1].fcstValue==='1'){
+                        SKY = '비'
                         break;
-                    }
-                    else if(data.item[i].fcstValue=='4'){
-                        if(data.item[i+1].fcstValue=='0'){
-                            SKY = '흐림'
-                            break;
-                        }else if(data.item[i+1].fcstValue=='1'){
-                            SKY = '비'
-                            break;
-                        }else if(data.item[i+1].fcstValue=='2'){
-                            SKY = '비/눈'
-                            break;
-                        }else if(data.item[i+1].fcstValue=='3'){
-                            SKY = '눈'
-                            break;
-                        }else if(data.item[i+1].fcstValue=='4'){
-                            SKY = '소나기'
-                            break;
-                        }
+                    }else if(data.item[i+1].fcstValue==='2'){
+                        SKY = '비/눈'
+                        break;
+                    }else if(data.item[i+1].fcstValue==='3'){
+                        SKY = '눈'
+                        break;
+                    }else if(data.item[i+1].fcstValue==='4'){
+                        SKY = '소나기'
+                        break;
                     }
                 }
-            }
+            
+        }
         }
         setResultTMX(compareTMX);
         setResultTMN(compareTMN);
@@ -155,64 +141,55 @@ function WeatherCard(){
         const weather_url = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${apiKey}&pageNo=1&numOfRows=1000&dataType=json&base_date=${dateFormat(today)}&base_time=0200&nx=${x}&ny=${y}`
         const response = await axios.get(weather_url);
         const data = response.data.response.body.items
-        var i;
-        var temper;
-        var SKY;
-        for(i=245;i<534;i++){
+        let compareTMX = -99;
+        let compareTMN = 99;
+        let temper;
+        let SKY;
+        for(let i=245;i<534;i++){
             const result = data.item[i].category
 
             if(result === 'TMX'){
                 let TMX = Number(data.item[i].fcstValue);
-                compareTMX = (TMX>=compareTMX)?TMX:compareTMX;
+                compareTMX =  Math.max(TMX,compareTMX)
+               
             }
             if(result === 'TMN'){
                 let TMN = Number(data.item[i].fcstValue);
-                compareTMN = (TMN<=compareTMN)?TMN:compareTMN;
+                compareTMN = Math.min(TMN,compareTMN)
             }
-        }
-        for(i=245;i<534;i++){
-            const result = data.item[i].category
-
-            if(result=='TMP'){
-                if(data.item[i].fcstTime == nowHour){
-                    temper = data.item[i].fcstValue;
+            if(result==='TMP' &&data.item[i].fcstTime === nowHour){
+                temper = data.item[i].fcstValue;
+            }
+            if(result === 'SKY' && data.item[i].fcstTime === nowHour){
+                if(data.item[i].fcstValue === '1'){
+                    SKY = "맑음"
                     break;
                 }
-            }
-        }
-        for(i=245;i<534;i++){
-            const result = data.item[i].category
-            if(result == 'SKY'){
-                if(data.item[i].fcstTime == nowHour){
-                    if(data.item[i].fcstValue == '1'){
-                        SKY = "맑음"
-                        break;
-                    }
-                    else if(data.item[i].fcstValue=='3'){
-                        SKY = '구름많음'
-                        break;
-                    }
-                    else if(data.item[i].fcstValue=='4'){
-                        if(data.item[i+1].fcstValue=='0'){
-                            SKY = '흐림'
-                            break;
-                        }else if(data.item[i+1].fcstValue=='1'){
-                            SKY = '비'
-                            break;
-                        }else if(data.item[i+1].fcstValue=='2'){
-                            SKY = '비/눈'
-                            break;
-                        }else if(data.item[i+1].fcstValue=='3'){
-                            SKY = '눈'
-                            break;
-                        }else if(data.item[i+1].fcstValue=='4'){
-                            SKY = '소나기'
-                            break;
-                        }
-                    }
+                else if(data.item[i].fcstValue==='3'){
+                    SKY = '구름많음'
+                    break;
                 }
+                else if(data.item[i].fcstValue==='4'){
+                    if(data.item[i+1].fcstValue==='0'){
+                        SKY = '흐림'
+                        break;
+                    }else if(data.item[i+1].fcstValue==='1'){
+                        SKY = '비'
+                        break;
+                    }else if(data.item[i+1].fcstValue==='2'){
+                        SKY = '비/눈'
+                        break;
+                    }else if(data.item[i+1].fcstValue==='3'){
+                        SKY = '눈'
+                        break;
+                    }else if(data.item[i+1].fcstValue==='4'){
+                        SKY = '소나기'
+                        break;
+                    }
             }
         }
+        }
+      
         setResultTMX(compareTMX);
         setResultTMN(compareTMN);
         setCurrnetT(temper);

@@ -1,45 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import { Card,Flex, Title,Button ,DateRangePicker ,DatePickerValue, DateRangePickerValue, Metric} from "@tremor/react";
+import { Card, Title,Button ,DateRangePicker } from "@tremor/react";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { ko } from 'date-fns/locale';
 import { format } from 'date-fns';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import "./Main.css";
 import LastestP from './components/LastestP'
 import LastestSMP from './components/LastestSMP';
-import App from '../App'
 
 
 
 function Main(){
-    const navigate = useNavigate();
 
     const apiKey = process.env.REACT_APP_API_Key;
-    const [data, setData] = useState(null);
 
-   
-      
-    // const handleButtonClick = () =>{
-    //     navigate('/chart');
-    // }
-    
-
-    
-    //db에서 값 가져오기
-    const [enddata_db, setEnd_DataDB] = useState([
-      {
-        "date":"",
-        "price":0
-      }
-    ]);
-    
-    const [endPrice, setendPrice] = useState([
-      {
-        "date":0,
-        "price":0
-      }
-    ])
     let [landPrice, setLandPrice] = useState([
       {
         "날짜":"",
@@ -88,39 +62,9 @@ function Main(){
 
 
     
-    const OnbuttonClick = () => {
-      axios.get(openApiUrl)
-        .then(response => {
-          const data = response.data;
-          const newDate = parseInt(data.response.body.items.item[0].bzDd,10); 
-          const newPrice = parseInt(data.response.body.items.item[0].clsPrc, 10); // 10은 기수를 나타냄
-          
-
-          setendPrice({
-            date: newDate,
-            price: newPrice
-          });
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
-    }
+    
     //종가 가져오기
-    const get_openApiData =(url)=>{
-      axios.get(url)
-        .then(response => {
-          const data = response.data;
-          const newDate = parseInt(data.response.body.items.item[0].bzDd,10); 
-          const newPrice = parseInt(data.response.body.items.item[0].clsPrc, 10); // 10은 기수를 나타냄
-          setendPrice({
-            date: newDate,
-            price: newPrice
-          });
-        })
-        .catch(error => {
-          console.error('Error fetching data,get_openApidata:', error);
-        });
-    }
+   
     const get_landData = async (url) => {
       try {
         const response = await axios.get(url);
@@ -157,16 +101,7 @@ function Main(){
       }
     };
    
-    const handleSaveData = async ()=>{
-      getDB_Land(new Date(dateValue.from))
-      .then((result)=>{
-        const result_db = result
-      })
-      .catch((err)=>{
-        console.error(err);
-      })
-
-    }
+  
   
     const handleSaveDateland = async (count) => {
       
@@ -236,25 +171,10 @@ function Main(){
         }
         currentDate.setDate(currentDate.getDate() + 1);
       }
-};
+}
       var today_endP= [];
-      let lastedtH;
-      const isthis=async()=>{
-        const today = new Date();
-        const closestTuesdayOrThursdayBefore = lastestdate(today);
-  
-        const result = await getDB_Land(closestTuesdayOrThursdayBefore.toString())
-        today_endP = [{
-          "날짜" : result.날짜,
-          "최고가" : result.최고가,
-          "최저가" : result.최저가
-        }]
-
-        return result
-      }
       
       
-      const [jsonData, setJsonData] = useState(null);
 
       useEffect(() => {
       const fetchData = async () => {
@@ -291,7 +211,7 @@ function Main(){
     
       fetchData();
     
-    }, [dateValue.from, dateValue.to, landPrice]); // 하나의 의존성 배열로 통합
+    }, [dateValue.from, dateValue.to, landPrice]); 
     
     
 
@@ -304,8 +224,8 @@ function Main(){
   return (
     <>
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '23vh' }}>
-      <LastestP></LastestP>
-      <LastestSMP></LastestSMP>
+      <LastestP/>
+      <LastestSMP/>
     </div>
       <DateRangePicker
         value={dateValue}
@@ -338,7 +258,7 @@ function Main(){
           <Line type="linear" dataKey="평균가" stroke="#8dd1e1" yAxisId="left" />
         </LineChart>
       </Card>
-      <div>
+      <Card>
         <Title>육지 rec 물량차트</Title>
         <LineChart
         width={1000}
@@ -358,7 +278,7 @@ function Main(){
         <Line type="linear" dataKey="매도물량" stroke="#82ca9d" yAxisId="right" />
         <Line type="linear" dataKey="체결물량" stroke="#ffc658" yAxisId="left" />
         </LineChart>
-      </div>
+      </Card>
     </>
   );
 }

@@ -1,6 +1,5 @@
 import React, { useEffect,useState } from "react";
-import { Card, Title,Button,Flex,Text}from "@tremor/react";
-import {ko} from "date-fns/locale/ko";
+import { Card, Title,Flex,Text}from "@tremor/react";
 import {format} from "date-fns/format";
 import axios from "axios";
 
@@ -19,7 +18,7 @@ function LastestP(){
         today.setDate(today.getDate()-1)
         while(1){
             
-            if(today.getDay() == 2|| today.getDay()==4){
+            if(today.getDay() === 2|| today.getDay()===4){
                 
                 break;
             }else {

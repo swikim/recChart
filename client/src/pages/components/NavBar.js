@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { Title,TabGroup, Tab,TabList,Flex } from "@tremor/react";
+// import { Link } from "react-router-dom";
+// import { Title,TabGroup, Tab,TabList,Flex } from "@tremor/react";
 const NavBar=()=>{
     return(
         <nav>

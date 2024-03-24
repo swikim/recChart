@@ -1,20 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import { Card, Title ,Text,Button ,Flex,
-    DateRangePicker ,DatePickerValue, DateRangePickerValue,DatePicker,DateRangePickerItem} from "@tremor/react";
-import { Tab,TabGroup,TabList,TabPanels,TabPanel } from '@tremor/react';
-import { ko } from 'date-fns/locale';
+// import { Card, Title ,Text,Button ,Flex,
+//     DateRangePicker ,DatePickerValue, DateRangePickerValue,DatePicker,DateRangePickerItem} from "@tremor/react";
+// import { Tab,TabGroup,TabList,TabPanels,TabPanel } from '@tremor/react';
+// import { ko } from 'date-fns/locale';
 import { differenceInDays,format } from 'date-fns';
 import "./Main.css";
 import WeatherCard from './components/WeatherCard';
-import Hr from './components/Hr';
+// import Hr from './components/Hr';
 
 function Weather(){
 
-    //dateValue
-    const [d_Value, setD_Value] = useState({
-        start : new Date(),
-    })
+    
     //monthValue
     const [dateValue, setDateValue] = useState({
         from : new Date(2024,0,1),
@@ -30,13 +27,7 @@ function Weather(){
           }
     }
 
-    const [weatherData, setWeatherData] = useState([
-        {
-            "날짜" : "",
-            "지점" : "",
-            "날씨": "",
-        }
-    ]);
+    
     // const [ssHrData, setSsHrData] = useState([
     //     {
     //         "날짜" : "",
@@ -45,13 +36,7 @@ function Weather(){
     //     }
     // ]);
     let ssHrData = [];
-    const [avgTaData, setAvgTaData] = useState([
-        {
-            "날짜" : "",
-            "지점" : "",
-            "기온": "",
-        }
-    ]);
+   
     
 
 
@@ -103,39 +88,15 @@ function Weather(){
             }
           });
     }
-    function isToday(date) {
-        const today = new Date();
-        return (
-          date.getDate() === today.getDate() &&
-          date.getMonth() === today.getMonth() &&
-          date.getFullYear() === today.getFullYear()
-        );
-      }
-
+    
     
     useEffect(()=>{
        
         
     },[])
 
-    //db저장
-    const saveData_DB =()=>{
-
-    }
+  
     
-    const testingButton=()=>{
-       
-        const startDate = new Date(dateValue.from);
-        const currentDate = new Date(dateValue.to);
-        var endDate;
-        if (isToday(currentDate)) {
-            const endDate = new Date(currentDate);
-            endDate.setDate(currentDate.getDate() - 1);
-          } 
-    }
-    const test_DV=()=>{
-
-    }
     return(
         <>
         <div style={{position:'relative'}}>
