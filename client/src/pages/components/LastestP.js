@@ -4,6 +4,8 @@ import {format} from "date-fns/format";
 import axios from "axios";
 
 function LastestP(){
+    const [LPA, setLPA] = useState(null)    
+
     const dateFormat = (date) => {
         try {
           let formattedDate = format(date, "yyyyMMdd");
@@ -27,13 +29,14 @@ function LastestP(){
             }
             return today;
     }
-    const closestTT = lastedTT();
+    
 
-    const [LPA, setLPA] = useState(null)    
     useEffect(()=>{
+        const closestTT = lastedTT();
+
         const fetchData = async()=>{
             try{
-            const response  =  await axios.get(`check_land?data=${'20240222'}`);
+            const response  =  await axios.get(`check_land?data=${dateFormat(closestTT)}`);
             const LHP = response.data.data.최고가;
             const LLP = response.data.data.최저가;
            
@@ -60,7 +63,7 @@ function LastestP(){
                 <p>최고가: {`${LPA.최고가}`}</p>
                 <Flex>        
                     <p>최저가: {LPA.최저가}</p>   
-                    <Text style={{textAlign:'right'}}>{`${dateFormat(closestTT)}`}기준</Text>
+                    <Text style={{textAlign:'right'}}>{`${dateFormat(lastedTT(new Date()))}`}기준</Text>
                 </Flex>
                 </div>
             ) : (

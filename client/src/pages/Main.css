@@ -32,7 +32,7 @@
     width: auto;
     height: auto;
 }
-.ggbox{
+.region1{
     position: absolute;
     padding: 2px;
     width: auto;
@@ -44,7 +44,7 @@
     background-color: white;
 
 }
-.gwbox{
+.region2{
     position: absolute;
     width: auto;
     width: auto;
@@ -55,7 +55,7 @@
     border-radius: 20px;
     background-color: white;
 }
-.cbbox{
+.region3{
     position: absolute;
     width: auto;
     width: auto;
@@ -67,7 +67,7 @@
     background-color: white;
 
 }
-.cnbox{
+.region4{
     position: absolute;
     width: auto;
     width: auto;
@@ -78,7 +78,7 @@
     border-radius: 20px;
     background-color: white;
 }
-.jbbox{
+.region5{
     position: absolute;
     width: auto;
     width: auto;
@@ -89,7 +89,7 @@
     border-radius: 20px;
     background-color: white;
 }
-.jnbox{
+.region6{
     position: absolute;
     width: auto;
     width: auto;
@@ -100,7 +100,7 @@
     border-radius: 20px;
     background-color: white;
 }
-.gbbox{
+.region7{
     position: absolute;
     width: auto;
     width: auto;
@@ -111,7 +111,7 @@
     border-radius: 20px;
     background-color: white;
 }
-.gnbox{
+.region8{
     position: absolute;
     width: auto;
     width: auto;
@@ -122,7 +122,7 @@
     border-radius: 20px;
     background-color: white;
 }
-.jjbox{
+.region9{
     position: absolute;
     width: auto;
     width: auto;
