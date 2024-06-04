@@ -64,6 +64,13 @@ app.get('/', async (req, res) => {
   }
 });
 
+app.get('/weather',(req,res)=>{
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+})
+app.get('/calculator',(req,res)=>{
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+})
+
 app.get('/chart', async (req, res) => {
   try {
     //let result = await db.collection('endP').find().toArray();

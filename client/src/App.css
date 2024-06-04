@@ -39,12 +39,15 @@
 
 .container{
   display: flex;
+  padding-right: 4%;
   padding-left: 2%;
 }
 .others{
   flex:4;
+
 }
 .app{
   padding-left: 7.2%;
+  padding-right: 8.2%;
   padding-top: 1.4%;
 }

@@ -67,6 +67,16 @@ function WeatherCard(){
             return null;
           }
     }
+    const fetchData = async (weather_url) => {
+        try {
+          const response = await axios.get(weather_url);
+          return response.data.response.body.items;
+        } catch (err) {
+          console.error("Error from weather fetching", err);
+          return null;
+        }
+      };
+    
     const getToday_W=async(x,y,today)=>{
         let nowHour = today.getHours() + "00";
         if(today.getHours()<10){
@@ -78,19 +88,19 @@ function WeatherCard(){
             nowHour = today.getHours() + "00";
         }
         const weather_url = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${apiKey}&pageNo=1&numOfRows=1000&dataType=json&base_date=${dateFormat(today)}&base_time=0200&nx=${x}&ny=${y}`
-        const response = await axios.get(weather_url);
-        const data = response.data.response.body.items
+
+        const data = await fetchData(weather_url);
+        if(!data) return;
+        
         let compareTMX = -99;
         let compareTMN = 99;
         let temper;
         let SKY;
-        for(let i=0;i<254;i++){
+        for(let i=0;i<245;i++){
             const result = data.item[i].category
-
             if(result === 'TMX'){
                 let TMX = Number(data.item[i].fcstValue);
                 compareTMX =  Math.max(TMX,compareTMX)
-               
             }
             if(result === 'TMN'){
                 let TMN = Number(data.item[i].fcstValue);
@@ -104,28 +114,21 @@ function WeatherCard(){
             if(result === 'SKY' && data.item[i].fcstTime === nowHour){
                 if(data.item[i].fcstValue === '1'){
                     SKY = "맑음"
-                    break;
                 }
                 else if(data.item[i].fcstValue==='3'){
                     SKY = '구름많음'
-                    break;
                 }
                 else if(data.item[i].fcstValue==='4'){
                     if(data.item[i+1].fcstValue==='0'){
                         SKY = '흐림'
-                        break;
                     }else if(data.item[i+1].fcstValue==='1'){
                         SKY = '비'
-                        break;
                     }else if(data.item[i+1].fcstValue==='2'){
                         SKY = '비/눈'
-                        break;
                     }else if(data.item[i+1].fcstValue==='3'){
                         SKY = '눈'
-                        break;
                     }else if(data.item[i+1].fcstValue==='4'){
                         SKY = '소나기'
-                        break;
                     }
                 }
             
@@ -135,6 +138,7 @@ function WeatherCard(){
         setResultTMN(compareTMN);
         setCurrnetT(temper);
         setSkyState(SKY);
+       
     }
     const getToday_W_E= async(x,y,today)=>{
         const nowHour = today.getHours() + "00";
@@ -151,7 +155,6 @@ function WeatherCard(){
             if(result === 'TMX'){
                 let TMX = Number(data.item[i].fcstValue);
                 compareTMX =  Math.max(TMX,compareTMX)
-               
             }
             if(result === 'TMN'){
                 let TMN = Number(data.item[i].fcstValue);
@@ -163,28 +166,21 @@ function WeatherCard(){
             if(result === 'SKY' && data.item[i].fcstTime === nowHour){
                 if(data.item[i].fcstValue === '1'){
                     SKY = "맑음"
-                    break;
                 }
                 else if(data.item[i].fcstValue==='3'){
                     SKY = '구름많음'
-                    break;
                 }
                 else if(data.item[i].fcstValue==='4'){
                     if(data.item[i+1].fcstValue==='0'){
                         SKY = '흐림'
-                        break;
                     }else if(data.item[i+1].fcstValue==='1'){
                         SKY = '비'
-                        break;
                     }else if(data.item[i+1].fcstValue==='2'){
                         SKY = '비/눈'
-                        break;
                     }else if(data.item[i+1].fcstValue==='3'){
                         SKY = '눈'
-                        break;
                     }else if(data.item[i+1].fcstValue==='4'){
                         SKY = '소나기'
-                        break;
                     }
             }
         }
@@ -235,7 +231,7 @@ function WeatherCard(){
                             <p>Loading...</p>
                         )}
                         {resultTMN !== null ? (
-                            <Text>최고기온:{`${resultTMN}`}</Text>
+                            <Text>최저기온:{`${resultTMN}`}</Text>
                             ) : (
                             <p>Loading...</p>
                             )}

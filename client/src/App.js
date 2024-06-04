@@ -6,6 +6,7 @@ import Weather from './pages/Weather';
 import Calculator from './pages/Calculator';
 import NavBar from './pages/components/NavBar';
 import Sidebar from './pages/components/Sidebar';
+import WeatherCard from './pages/components/WeatherCard';
 
 function App() {
   return (
@@ -17,12 +18,10 @@ function App() {
       <Sidebar/>
       <div className='others'>
          <Routes>
-
-          <Route>
             <Route path='/' element={<Main />} />
             <Route path='/calculator' element={<Calculator />} />
+            <Route path='/weathercard' element={<WeatherCard/>}/>
             <Route path='/weather' element={<Weather />} />
-          </Route>
 
         </Routes>
       </div>

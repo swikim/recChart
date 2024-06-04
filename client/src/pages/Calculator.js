@@ -1,8 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { Select , SelectItem,Card, Title, TextInput ,Grid ,Text, Metric ,Button,Dialog, DialogPanel} from "@tremor/react";
-import { ca } from "date-fns/locale";
+import { Select , SelectItem,Card, Title, TextInput ,Grid ,Text, Metric ,Button} from "@tremor/react";
 
 
 function Calculator  () {
@@ -32,41 +30,37 @@ function Calculator  () {
         if(I_value===''){
           alert('설치유형을 선택해주세요')
           return;
-        }else if(I_value == 1){
-            if(capacity===''){alert('설비용량을 입력해주세요')
-          return;}
-            if(capacity<100){
-                setC_result(1.2);
-            }
-            else if(100<=capacity<3000){
-                const result1_2 = (1.2*99.999 +(capacity-99.999)*1.0)/capacity;
-                setC_result(result1_2.toFixed(3));
-            }
-            else if(capacity>=3000){
-                const result1_3 = ((1.2*99.999)/capacity)+((2900.001*1.0)/capacity) +((capacity-3000)*0.7/capacity);
-                setC_result(result1_3)
-            }
-        }else if(I_value == 2){
-          if(capacity===''){alert('설비용량을 입력해주세요')
-          return;}
-            if(capacity <=3000) setC_result(1.5);
-            else {
-                const result2_2 = (3000*1.5+(capacity-3000))/capacity;
-                setC_result(result2_2.toFixed(4));
-            }
-        }else if(I_value == 3){
-          if(capacity===''){alert('설비용량을 입력해주세요')
-          return;}
-          if(capacity<100){const result3_1 = 1.6
-          setC_result(result3_1)}
-          else if(100<=capacity<3000){const result3_2 = 1.4
-            setC_result(result3_2)}
-          else {const result3_3 = 1.2
-            setC_result(result3_3)}
-        }else if(I_value == 4){
-          
-          setC_result(0.5)
         }
+        if(capacity===''){alert('설비용량을 입력해주세요')
+          return;}
+        let c_result;
+        if(I_value === "1"){
+          if(capacity<100){
+            c_result = 1.2;
+          }
+          else if(100<=capacity<3000){
+              c_result = ((1.2*99.999 +(capacity-99.999)*1.0)/capacity).toFixed(3);
+          }
+          else if(capacity>=3000){
+              c_result = ((1.2*99.999)/capacity)+((2900.001*1.0)/capacity) +((capacity-3000)*0.7/capacity);
+          }
+        }else if(I_value === "2"){
+          if(capacity <=3000) c_result = 1.5;
+          else {
+              c_result = ((3000*1.5+(capacity-3000))/capacity).toFixed(4);
+          }
+      }else if(I_value === "3"){
+        if(capacity<100){
+          c_result= 1.6
+        }
+        else if(100<=capacity<3000){
+          c_result = 1.4}
+        else {c_result = 1.2
+          }
+      }else if(I_value === "4"){
+        c_result = 0.5;
+      }
+      setC_result(c_result)
        
     }
 
@@ -115,7 +109,6 @@ function Calculator  () {
 
         setR_result(resultFloor.toFixed());
         setN_result(resultN.toFixed(1));
-        setComm_result(parseInt(r_result)*50)
     }
     const handleCheckInput_P = () =>{
       if(contract_p===''){
@@ -127,6 +120,7 @@ function Calculator  () {
       }
       setTotalrevenues(contract_p*r_result);
       setRealreturn(contract_p*r_result-comm_result);
+      setComm_result(parseInt(r_result)*50)
     }
     
     
@@ -202,7 +196,6 @@ function Calculator  () {
                 <Text>{r_result}</Text>
                 <Metric>이월된 REC발급량</Metric>
                 <Text>{n_result}</Text>
-                
             </div>
           </div>
         </Card>

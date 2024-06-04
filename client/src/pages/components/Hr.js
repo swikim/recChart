@@ -9,12 +9,11 @@ const Hr=({region,onRegionChange})=>{
     const apiKey = process.env.REACT_APP_API_Key
 
     const [dateValue, setDateValue] = useState({
-        from : new Date(2024,0,1),
+        from : new Date(2024,2,1),
         to : new Date(),
     })
     const [avgHr, setAvgHr] = useState([]);
     const [regionNames, setRegionNames] = useState(['경기','강원','충북','충남','전북','전남','경북','경남','제주'])
-    let ssHrData = [];
 
     //지역코드 보내기
     const handleClick=(region)=>{
@@ -45,12 +44,13 @@ const Hr=({region,onRegionChange})=>{
         const stnId = data.items.item[0].stnId
         let sumHr=0;
         for (let i = 0; i < dayDifference - 1; i++) {
-            const { tm: weatherInfoDate, sumSsHr: weatherInfoHr, stnId: regionInfo } = data.items.item[i];
+            const { tm: weatherInfoDate, sumSsHr: weatherInfoHr, stnId: stnId } = data.items.item[i];
             sumHr += Number(weatherInfoHr);
 
-            if (!avgHr.includes(stnId)) {
-                setAvgHr((prevArray) => [(sumHr / dayDifference).toFixed(1), ...prevArray]);
-            }
+            
+        }
+        if (!avgHr.includes(stnId)) {
+            setAvgHr((prevArray) => [(sumHr / dayDifference).toFixed(1), ...prevArray]);
         }
         }catch(err){
             console.error("Error fetching get_weather",err)
@@ -107,7 +107,7 @@ const Hr=({region,onRegionChange})=>{
                         <Text className="text">
                             {regionName}
                             <br />
-                            {`${avgHr[index]}`}
+                            {`${avgHr[index]}`} 
                         </Text>
                     ) : (
                         <p>Loading...</p>

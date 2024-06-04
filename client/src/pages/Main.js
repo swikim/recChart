@@ -195,17 +195,7 @@ function Main(){
           console.error('Error fetching data', error);
         }
     
-        try {
-          const response = await axios.get(`/check_land?data=${dateFormat(closestTT)}`);
-          const today_endP = [{
-            "날짜": response.data.data.날짜,
-            "최고가": response.data.data.최고가,
-            "최저가": response.data.data.최저가
-          }];
-        } catch (error) {
-          console.error('Error fetching data', error);
-        }
-
+       
        
       };
     
