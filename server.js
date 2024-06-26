@@ -9,9 +9,6 @@ const { parseString } = require('xml2js');
 require('dotenv').config();
 const { End_P } = require('./model/End_P');
 const { Land_P }= require('./model/Land_P');
-const { Weather_S} = require('./model/Weather_S');
-const { SumSsHr } = require('./model/SumSsHr');
-const { avgTa } = require('./model/avgTa')
 
 const mongoUrl = process.env.mongoUrl;
 const apiKey = process.env.apiKey;
@@ -67,7 +64,7 @@ app.get('/', async (req, res) => {
 app.get('/weather',(req,res)=>{
   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 })
-app.get('/calculator',(req,res)=>{
+app.get('/calculater',(req,res)=>{
   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 })
 
@@ -103,23 +100,23 @@ app.post('/register',async(req,res)=>{
 
 })
 
-app.post('/api/saveData', async(req,res)=>{
-    const endp = new End_P(req.body.data);
+// app.post('/api/saveData', async(req,res)=>{
+//     const endp = new End_P(req.body.data);
 
-    await endp.save()
-        .then(()=>{
-            res.status(200).json({
-                success: true,
-            });
-        })
-        .catch((err)=>{
-            console.error(err);
-            res.json({
-                success :false,
-                err:err,
-            });
-        })
-})
+//     await endp.save()
+//         .then(()=>{
+//             res.status(200).json({
+//                 success: true,
+//             });
+//         })
+//         .catch((err)=>{
+//             console.error(err);
+//             res.json({
+//                 success :false,
+//                 err:err,
+//             });
+//         })
+// })
 app.post('/api/saveData2',async(req,res)=>{
   const landp = new Land_P(req.body.data);
   await landp.save()
@@ -136,24 +133,24 @@ app.post('/api/saveData2',async(req,res)=>{
       });
   })
 })
-app.get('/search',async(req,res)=>{
-  const s_Date_F = req.query.startDate
-  const s_Date_T = req.query.endDate
-  try{
-    let result = await End_P.find({
-      date:{
-        $gte: s_Date_F,
-        $lte: s_Date_T,
-      },
-    }).exec();
+// app.get('/search',async(req,res)=>{
+//   const s_Date_F = req.query.startDate
+//   const s_Date_T = req.query.endDate
+//   try{
+//     let result = await End_P.find({
+//       date:{
+//         $gte: s_Date_F,
+//         $lte: s_Date_T,
+//       },
+//     }).exec();
   
     
-    res.json({ data : result})
+//     res.json({ data : result})
 
-  }catch(error){
-    console.error('Error Search Code :', error);
-  }
-})
+//   }catch(error){
+//     console.error('Error Search Code :', error);
+//   }
+// })
 app.get('/search_land',async(req,res)=>{
   const start_d = req.query.startDate
   const end_d = req.query.endDate
@@ -170,26 +167,26 @@ app.get('/search_land',async(req,res)=>{
   }
   
 })
-app.get('/check', async (req, res) => {
-  const currentDate = req.query.data;
+// app.get('/check', async (req, res) => {
+//   const currentDate = req.query.data;
 
 
-  try {
-    let result = await End_P.findOne({
-      date: currentDate,
-    }).exec();
+//   try {
+//     let result = await End_P.findOne({
+//       date: currentDate,
+//     }).exec();
 
 
-    res.json({ data: result });
+//     res.json({ data: result });
     
-  } catch (err) {
-    console.error('Error Check date - server', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
+//   } catch (err) {
+//     console.error('Error Check date - server', err);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
 
 app.get('/check_land',async(req,res)=>{
-  const currentDate=req.query.data;
+  let currentDate=req.query.data;
   try{
     let result = await Land_P.findOne({
       날짜:currentDate,

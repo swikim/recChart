@@ -68,38 +68,24 @@ function Main(){
     const get_landData = async (url) => {
       try {
         const response = await axios.get(url);
-        const data = response.data;
-        const newdate = data.response.body.items.item[0].bzDd;
-        const newlandHgPrc = data.response.body.items.item[0].landHgPrc;
-        const newlandLwPrc = data.response.body.items.item[0].landLwPrc;
-        const newLandOrdRecValue = data.response.body.items.item[0].landOrdRecValue;
-        const newlandTrdRecValue = data.response.body.items.item[0].landTrdRecValue;
-        const newlandAvgPrc = data.response.body.items.item[0].landAvgPrc;
-        setLandPrice([
-          {
-            "날짜": newdate,
-            "최고가": newlandHgPrc,
-            "최저가": newlandLwPrc,
-            "매도물량": newLandOrdRecValue,
-            "체결물량": newlandTrdRecValue,
-            "평균가": newlandAvgPrc,
-          }
-        ]);
-  
-        landPrice2 = [
-          {
-            "날짜": newdate,
-            "최고가": newlandHgPrc,
-            "최저가": newlandLwPrc,
-            "매도물량": newLandOrdRecValue,
-            "체결물량": newlandTrdRecValue,
-            "평균가": newlandAvgPrc,
-          }
-        ];
+        const item = response.data.response.body.items.item[0];
+    
+        const newLandData = {
+          "날짜": item.bzDd,
+          "최고가": item.landHgPrc,
+          "최저가": item.landLwPrc,
+          "매도물량": item.landOrdRecValue,
+          "체결물량": item.landTrdRecValue,
+          "평균가": item.landAvgPrc,
+        };
+    
+        setLandPrice([newLandData]);
+        landPrice2 = [newLandData];
       } catch (err) {
         console.error("error get_landData", err);
       }
     };
+    
    
   
   
@@ -112,7 +98,7 @@ function Main(){
       }
     };
     
-
+    
     const getDB_Land=async(currentDate)=>{
       try{
         const response = await axios.get(`/check_land?data=${dateFormat(currentDate)}`);
@@ -140,10 +126,13 @@ function Main(){
     }
     
 
-  const test = async () => {
+  const checking_button = async () => {
       const startDate = new Date(dateValue.from);
       const endDate = new Date(dateValue.to);
-
+      if(endDate>new Date()||startDate()<new Date(2019,0,1)){
+        alert("날짜를 재설정해주세요");
+        return;
+      }
       const currentDate = new Date(startDate);
       let count = 0;
       while (currentDate <= endDate) {
@@ -172,7 +161,6 @@ function Main(){
         currentDate.setDate(currentDate.getDate() + 1);
       }
 }
-      var today_endP= [];
       
       
 
@@ -194,9 +182,6 @@ function Main(){
         } catch (error) {
           console.error('Error fetching data', error);
         }
-    
-       
-       
       };
     
       fetchData();
@@ -225,7 +210,7 @@ function Main(){
         >
 
       </DateRangePicker>
-      <Button onClick={test}> 확인</Button>
+      <Button onClick={checking_button}> 확인</Button>
       <Card>
         <Title>육지 rec 가격</Title>
         <LineChart
@@ -234,7 +219,7 @@ function Main(){
          data={landPrice_get}
          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
           <XAxis dataKey={"날짜"}/>
-          <YAxis yAxisId="left" type='number' domain={[60000,90000]}/>
+          <YAxis yAxisId="left"  stype='number' domain={[60000,90000]}/>
           <YAxis yAxisId="right" orientation="right" />
           <CartesianGrid strokeDasharray="3 3" />
 

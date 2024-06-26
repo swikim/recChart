@@ -96,7 +96,7 @@ const Hr=({region,onRegionChange})=>{
             selectPlaceholder='선택하세요'
             >
         </DateRangePicker>
-            <h2 style={{position:'absolute',top:'5px',right:'10px'}}>단위:시간</h2>
+            <h2 style={{position:'absolute',top:'5px',right:'40px'}}>단위:시간</h2>
          <img src="/koreamap.png" 
         style={{width:'800px',height:'800px'}}/>
            
