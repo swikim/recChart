@@ -14,6 +14,8 @@ const Hr=({region,onRegionChange})=>{
     })
     const [avgHr, setAvgHr] = useState([]);
     const [regionNames, setRegionNames] = useState(['경기','강원','충북','충남','전북','전남','경북','경남','제주'])
+    const regionCodes = [119,114,131,232,146,156,138,152,184]
+        //경기,강원,충북,충남,전북,전남,경북,경남,제주
 
     //지역코드 보내기
     const handleClick=(region)=>{
@@ -38,22 +40,19 @@ const Hr=({region,onRegionChange})=>{
        
         const dayDifference = dateSubtract()
         const url =`https://apis.data.go.kr/1360000/AsosDalyInfoService/getWthrDataList?serviceKey=${apiKey}&pageNo=1&numOfRows=${dayDifference}&dataType=json&dataCd=ASOS&dateCd=DAY&startDt=${startDate}&endDt=${dateFormat(endDate)}&stnIds=${region_Code}`
-        try{
+        try {
             const response = await axios.get(url);
-        const data = response.data.response.body;
-        const stnId = data.items.item[0].stnId
-        let sumHr=0;
-        for (let i = 0; i < dayDifference - 1; i++) {
-            const { tm: weatherInfoDate, sumSsHr: weatherInfoHr, stnId: stnId } = data.items.item[i];
-            sumHr += Number(weatherInfoHr);
-
-            
-        }
-        if (!avgHr.includes(stnId)) {
-            setAvgHr((prevArray) => [(sumHr / dayDifference).toFixed(1), ...prevArray]);
-        }
-        }catch(err){
-            console.error("Error fetching get_weather",err)
+            const data = response.data.response.body.items.item;
+    
+            let sumHr = 0;
+            data.forEach(item => {
+                sumHr += Number(item.sumSsHr);
+            });
+    
+            return (sumHr / dayDifference).toFixed(1);
+        } catch (err) {
+            console.error("Error fetching get_weather", err);
+            return null;
         }
     }
     function isToday(date) {
@@ -66,23 +65,23 @@ const Hr=({region,onRegionChange})=>{
       }
 
       useEffect(()=>{
-        const regionCodes = [119,114,131,232,146,156,138,152,184]
-        //경기,강원,충북,충남,전북,전남,경북,경남,제주
-
-        const startDate = new Date(dateValue.from);
-        const currentDate = new Date(dateValue.to);
-        let endDate = new Date(currentDate);
-
-        if (isToday(currentDate)) {
-            endDate.setDate(currentDate.getDate() - 1);
-          } else {
-        }
-       
-        regionCodes.forEach(function(regionCode){
-            get_Weather(dateFormat(startDate),endDate,regionCode)
-        })
-
-
+        const fetchWeatherData = async () => {
+            const startDate = dateFormat(dateValue.from);
+            const currentDate = new Date(dateValue.to);
+            let endDate = new Date(currentDate);
+    
+            if (isToday(currentDate)) {
+                endDate.setDate(currentDate.getDate() - 1);
+            }
+    
+            // 모든 지역에 대한 API 호출을 동시에 처리
+            const promises = regionCodes.map(regionCode => get_Weather(startDate, endDate, regionCode));
+            const results = await Promise.all(promises);
+    
+            setAvgHr(results);  // 상태를 한 번에 업데이트
+        };
+    
+        fetchWeatherData();
       },[dateValue])
      
     return (

@@ -168,8 +168,6 @@ function Main(){
       const fetchData = async () => {
         const startDate = dateFormat(dateValue.from);
         const endDate = dateFormat(dateValue.to);
-        const today = new Date();
-        const closestTT = lastestdate(today);
     
         try {
           const response = await axios.get('/search_land', {
@@ -186,7 +184,7 @@ function Main(){
     
       fetchData();
     
-    }, [dateValue.from, dateValue.to, landPrice]); 
+    }, [dateValue]); 
     
     
 
